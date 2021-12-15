@@ -1,0 +1,4 @@
+GPIO.c:11:6:delay	24	static
+GPIO.c:16:6:GPIO_Init	24	static
+GPIO.c:113:15:GPIO_ReadPin	24	static
+GPIO.c:134:6:GPIO_WritePin	24	static
