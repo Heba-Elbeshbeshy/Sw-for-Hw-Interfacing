@@ -24,5 +24,4 @@ SUBDIRS := \
 Core/Src \
 Core/Startup \
 GPIO \
-test \
 
