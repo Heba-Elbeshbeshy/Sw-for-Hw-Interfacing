@@ -1,0 +1,4 @@
+DMA.c:32:6:DMA_Init	16	static
+DMA.c:38:6:DMA_ChannelParameters	24	static
+DMA.c:102:6:DMA_Req_To_Start_Transfer	16	static
+DMA.c:122:6:DMA_ISR	8	static

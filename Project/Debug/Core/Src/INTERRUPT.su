@@ -1,0 +1,3 @@
+INTERRUPT.c:16:6:SYSCFG_EnableClock	4	static
+INTERRUPT.c:21:6:Configuration_EXTI	16	static
+INTERRUPT.c:34:6:NVIC_Controller	16	static
