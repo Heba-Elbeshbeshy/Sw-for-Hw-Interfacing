@@ -54,10 +54,10 @@ void GPIO_Init( char Port, unsigned int PIN_NO, unsigned int PIN_Dir, unsigned i
 				switch(Default_State)
 				{
 					case(PULL_UP):
-	     	             GPIOB_PUPDR |= (0x01<< 2*PIN_NO);
+	     	                             GPIOB_PUPDR |= (0x01<< 2*PIN_NO);
 					break;
 					case(PULL_DOWN):
-	     	              GPIOB_PUPDR |= (0x02<< 2*PIN_NO);
+	     	                             GPIOB_PUPDR |= (0x02<< 2*PIN_NO);
 					break;
 				}//end switch
 				}
