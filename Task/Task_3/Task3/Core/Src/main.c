@@ -6,7 +6,6 @@ int color = 0;
 
 int main(void)
 {
-	GPIO_Init('A', 0 , OUTPUT, PUSH_PULL);
 	GPIO_Init('B', 3 , INPUT, PULL_UP);
 	GPIO_Init('B', 5 , OUTPUT, PUSH_PULL);
 	GPIO_Init('B', 6 , OUTPUT, PUSH_PULL);
@@ -14,7 +13,6 @@ int main(void)
 
   while (1)
   {
-	 	  GPIO_WritePin('A', 1, 1, 0);
 		  unsigned char Button = GPIO_ReadPin('B', 3);
 		  delay(1000);
 		  if (Button && !(GPIO_ReadPin('B', 3)))
