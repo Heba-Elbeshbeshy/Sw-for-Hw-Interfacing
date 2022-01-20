@@ -17,7 +17,6 @@ int main(void)
 {
   GPIO_EnableClock('A');
   for (int i = 0; i < 7; i++) {GPIO_Init('A', i, OUTPUT, PUSH_PULL);}
-  GPIO_Init('A', 7, INPUT, PULL_UP);
   KeyPad_Init();
 
   while (1)
