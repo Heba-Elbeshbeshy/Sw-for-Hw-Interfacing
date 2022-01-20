@@ -24,13 +24,13 @@ void UR_INIT(void)
 
 void UR_Transmit(char *str)
 {
-	while ((*str) != '\0')
+   while ((*str) != '\0')
     {
-		while((((*USART_SR) >> 6)&1))
-		{
-		   *USART_DR = *str;
-		   (str++);
-		}
+	while((((*USART_SR) >> 6)&1))
+	{
+	   *USART_DR = *str;
+	   (str++);
+	}
     }
 }
 
