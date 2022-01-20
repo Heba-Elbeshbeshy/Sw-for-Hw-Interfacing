@@ -10,10 +10,7 @@
 
 unsigned char KeyPadButtonState = Released;
 unsigned char Key_Pressed_Num = 0;
-unsigned char KeyPad_array[3][4] = {{1,
-		                            4,
-									7,
-									'*'},
+unsigned char KeyPad_array[3][4] = {{1, 4, 7, '*'},
 		                           {2,
 		                            5,
 									8,
