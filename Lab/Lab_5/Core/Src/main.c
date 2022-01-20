@@ -9,7 +9,6 @@
 unsigned char counter = 0;
 unsigned char sevenSegHex[10] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
 
-void delay(int secs);
 void KeyPad_CallOut_Button_Pressed_Notification();
 void Display_Key_On_SevSeg(unsigned char counter);
 
@@ -26,10 +25,6 @@ int main(void)
   return 0;
 }
 
-void delay(int secs)
-{
-    for (int i = 0; i < secs; i++) {}
-}
 void KeyPad_CallOut_Button_Pressed_Notification()
 {
 	counter = KeyPad_GetKey();
@@ -37,9 +32,8 @@ void KeyPad_CallOut_Button_Pressed_Notification()
 }
 void Display_Key_On_SevSeg(unsigned char counter)
 {
-	for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 7; i++)
     {
-		GPIO_WritePin('A', i, (sevenSegHex[counter] & (1 << i)) >> i);
+	GPIO_WritePin('A', i, (sevenSegHex[counter] & (1 << i)) >> i);
     }
-	delay(100000);
 }
