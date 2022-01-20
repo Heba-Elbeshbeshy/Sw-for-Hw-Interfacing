@@ -152,64 +152,16 @@ void GPIO_WritePin(char Port, unsigned int Data, unsigned int NUMBER, unsigned i
 		case('B'):
 //		     if(GPIOA_MODER >> (2*PIN_NO) & 1)
 //		        {
-					 if(Data)
-					 {
-						 GPIOB_ODR |= (NUMBER<<SHIFT_VALUE);
-					 }
-					 else
-					 {
-						 GPIOB_ODR &= ~(NUMBER<<SHIFT_VALUE);
-					 }
+			 if(Data)
+			 {
+				 GPIOB_ODR |= (NUMBER<<SHIFT_VALUE);
+			 }
+			 else
+			 {
+				 GPIOB_ODR &= ~(NUMBER<<SHIFT_VALUE);
+			 }
 //		        }
 		break;
 	}// end switch
 
 }
-//unsigned char GPIO_WritePin(char Port, unsigned int PIN_NO, unsigned int Data)
-//{
-//	unsigned char result;
-//	switch(Port)
-//	{
-//		case('A'):
-//			if(GPIOA_MODER >> (2*PIN_NO) & 1)
-//			{
-//			     if(Data)
-//			     {
-//			    	 GPIOA_ODR |= (1<<PIN_NO);
-//			     }
-//			     else
-//			     {
-//			    	 GPIOA_ODR &= ~(1<<PIN_NO);
-//			     }
-//				result = OK;
-//			}
-//			else
-//			{
-//				result = NOK;
-//			}
-//		break;
-//		case('B'):
-//		     if(GPIOA_MODER >> (2*PIN_NO) & 1)
-//		        {
-//					 if(Data)
-//					 {
-//						 GPIOB_ODR |= (1<<PIN_NO);
-//					 }
-//					 else
-//					 {
-//						 GPIOB_ODR &= ~(1<<PIN_NO);
-//					 }
-//					result = OK;
-//				}
-//				else
-//				{
-//					result = NOK;
-//				}
-//
-//		break;
-//
-//	}// end switch
-//
-//	return result;
-//}
-
