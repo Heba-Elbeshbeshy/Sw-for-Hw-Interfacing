@@ -16,6 +16,6 @@
 
 void SYSCFG_EnableClock();
 void Configuration_EXTI(unsigned char PIN);
-void NVIC_Controller(unsigned char Stream_NM);
+void NVIC_Controller(unsigned char Peripheral_ID,unsigned char Stream_NM);
 
 #endif /* INTERRUPT_H */

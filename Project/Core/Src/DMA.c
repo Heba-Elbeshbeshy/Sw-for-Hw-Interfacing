@@ -6,7 +6,9 @@
  */
 #include "DMA.h"
 
-// DMA 1-2 STream 0--7 Reg 6
+ unsigned char State = 0;
+
+// DMA 1-2     STream 0--7       Reg6
 unsigned int *DMA_LOOKUP[2][8][6] =
 {{{DMA1_S0CR, DMA1_S0NDTR, DMA1_S0PAR, DMA1_S0M0AR, DMA1_S0M1AR, DMA1_S0FCR},
   {DMA1_S1CR, DMA1_S1NDTR, DMA1_S1PAR, DMA1_S1M0AR, DMA1_S1M1AR, DMA1_S1FCR},
@@ -28,16 +30,17 @@ unsigned int *DMA_LOOKUP[2][8][6] =
 unsigned int *DMA_INTTERRUPT_LOOKUP[2][4] = {{DMA1_LISR, DMA1_HISR, DMA1_LIFCR, DMA1_HIFCR},
                                             {DMA2_LISR, DMA2_HISR, DMA2_LIFCR, DMA2_HIFCR}};
 
+unsigned int ClearFlags[4] = {0, 6, 16, 22};// DMA_L/H_IFCR
 
 void DMA_Init(unsigned char Peripheral_ID, unsigned char Stream_NM)
 {
-	*RCC_AHB1ENR |= (0x01 << ( Peripheral_ID + (unsigned char)21 ));//	 DMAEN
+	*RCC_AHB1ENR |= (0x01 << ( Peripheral_ID + (unsigned char)21)); //DMAEN
 }
 
 //A function to initialize the DMA channel parameters
 void DMA_ChannelParameters(unsigned char Peripheral_ID, unsigned char Stream_NM,
 		unsigned char Trigger_Src, unsigned int * Src_Add, unsigned int * Dest_Add, unsigned int NM_Of_Transfer,
-		unsigned int Item_Size, unsigned char Mode, unsigned int Transfer_Type)
+		unsigned int DIR, unsigned int Item_Size, unsigned char Mode, unsigned int Transfer_Type)
 {
 	//	Clear  DMA_SxCR
 	*DMA_LOOKUP[Peripheral_ID][Stream_NM][0] &= ~(0xff << 0);
@@ -50,7 +53,7 @@ void DMA_ChannelParameters(unsigned char Peripheral_ID, unsigned char Stream_NM,
 	*DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (0x03 << 16);//11 very high
 
 //	 Bits 7:6 DIR: Data transfer direction
-	*DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (0x02 << 6);//10: Memory-to-memory
+	*DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (DIR << 6);
 
 //	 Item_Size
 //	 Bits 14:13 MSIZE: Memory data size
@@ -64,31 +67,29 @@ void DMA_ChannelParameters(unsigned char Peripheral_ID, unsigned char Stream_NM,
 	  //	 Bit 2 DMDIS: Direct mode disable
 			*DMA_LOOKUP[Peripheral_ID][Stream_NM][5] |= (0x01 << 2); //1: Direct mode disabled
 	  //	 Bits 1:0 FTH: FIFO threshold selection
-			*DMA_LOOKUP[Peripheral_ID][Stream_NM][5] |= (0x03 << 0); //01: 1/2 full FIFO
+			*DMA_LOOKUP[Peripheral_ID][Stream_NM][5] |= (0x03 << 0); //11: full FIFO
+    //      Bit 7 FEIE: FIFO error interrupt enable
+			*DMA_LOOKUP[Peripheral_ID][Stream_NM][5] |= (0x01 << 0); //1: FE interrupt enabled
 		break;
 		case(Direct_Mode):
 			*DMA_LOOKUP[Peripheral_ID][Stream_NM][5] &= ~(0x01 << 2); //0: Direct mode enabled
+		    *DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (0x01 << 1);//DMEIE  Direct mode error interrupt enable
 		break;
 	}
-	if(Transfer_Type == Single)
-	{
-//	   Bits 24:23 MBURST: Memory burst transfer configuration
-	   *DMA_LOOKUP[Peripheral_ID][Stream_NM][0] &= ~(Single << 23);
-//	   Bits 22:21 PBURST: Peripheral burst transfer configuration
-	   *DMA_LOOKUP[Peripheral_ID][Stream_NM][0] &= ~(Single << 21);
-	}
-	else
-	{
-	   *DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (Transfer_Type << 23);
-	   *DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (Transfer_Type << 21);
-	}
 
+//	 Bits 24:23 MBURST: Memory burst transfer configuration
+	*DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (Transfer_Type << 23);
+//	 Bits 22:21 PBURST: Peripheral burst transfer configuration
+    *DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (Transfer_Type << 21);
 //	 Bit 9 PINC: Peripheral increment mode
 	*DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (0x01 << 9); //1: PINC incremented
 //	 Bit 10 MINC: Memory increment mode
 	*DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (0x01 << 10); //1: MINC incremented
+
 //   Bit 4 TCIE: Transfer complete interrupt enable
 	*DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (0x01 << 4);// 1: TC interrupt enabled
+// 	 Bit 2 TEIE: Transfer error interrupt enable
+	*DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (0x01 << 2);// 1: TE interrupt enabled
 
 //	 DMA2_S0PAR
 	*DMA_LOOKUP[Peripheral_ID][Stream_NM][2] = (unsigned int)Src_Add;
@@ -104,30 +105,50 @@ void DMA_Req_To_Start_Transfer(unsigned char Peripheral_ID, unsigned char Stream
 //   Clear all Interrupt flags
 	if(Stream_NM < (unsigned char)4)
 	{
-		 *DMA_INTTERRUPT_LOOKUP[Peripheral_ID][2] = 0x3D;//STREAM0 STRAMCLEARFLAGARRAY[STREAM_NM]
-//		 *DMA2_LIFCR = 0x3D;
+		 *DMA_INTTERRUPT_LOOKUP[Peripheral_ID][2] |= (0x3D << ClearFlags[Stream_NM]);//DMA_LIFCR
 	}
 	else
 	{
-//		 *DMA_INTTERRUPT_LOOKUP[Peripheral_ID][3] = ;//DMA_HIFCR
-		//	*DMA2_HIFCR = 0x00; //for streams akbr mn 3
+		 *DMA_INTTERRUPT_LOOKUP[Peripheral_ID][3] |= (0x3D << ClearFlags[Stream_NM-4]);//DMA_HIFCR
 	}
 
 //	 DMA_SxCR Bit 0 EN
 	*DMA_LOOKUP[Peripheral_ID][Stream_NM][0] |= (0x01 << 0);
 }
 
+unsigned char DMA_TransferState(void)
+{
+	if((*DMA2_LISR >> 5)&1) //check interrupt from TC
+	{
+		 State = TransferComplete;
+	}
+	else if((*DMA2_LISR >> 3)&1) //check interrupt from TE
+	{
+		 State = TransferErorr;
+	}
+	else if((*DMA2_LISR >> 4)&1) //check interrupt from HT
+	{
+		 State = HalfTransfer;
+	}
+	else if((*DMA2_LISR >> 2)&1) //check interrupt from DM
+	{
+		 State = DirectModeErorr;
+	}
+	else if((*DMA2_LISR >> 0)&1) //check interrupt from FE
+	{
+		 State = FIFOErorr;
+	}
+	return State;
+}
 
-//ISR - A function to check the transfer compelete
+//ISR - A function to check the transfer complete complete
 void DMA_ISR(void)
 {
-//	check interrupt from TC
-	if((*DMA2_LISR >> 5)&1)
+	State = DMA_TransferState();
+	if(State == TransferComplete)
 	{
-//		 unsigned char State = TransferCompelete;
-		 DMA_TransferState();
-	}
-	// notification
+	   Led_CallOut_Notification();
 //	 CTCIFx: Stream x clear transfer complete interrupt flag
-	*DMA2_LIFCR |= (0x01 << 5);
+	  *DMA2_LIFCR |= (0x01 << 5);
+	}
 }

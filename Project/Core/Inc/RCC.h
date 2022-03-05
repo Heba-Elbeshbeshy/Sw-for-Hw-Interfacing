@@ -10,8 +10,8 @@
 
 #include "stm32f401xc.h"
 
-//Generic macro
-#define GPIO_REG(PORT_ID, REG_ID) ((unsigned int*)(PORT_ID + REG_ID))
+////Generic macro
+//#define GPIO_REG(PORT_ID, REG_ID) ((unsigned int*)(PORT_ID + REG_ID))
 
 //Generic macro
 #define Peripheral_REG(PORT_ID, REG_ID) ((unsigned int*)(PORT_ID + REG_ID))

@@ -8,7 +8,6 @@ C_SRCS += \
 ../Core/Src/DMA.c \
 ../Core/Src/GPIO.c \
 ../Core/Src/INTERRUPT.c \
-../Core/Src/USART.c \
 ../Core/Src/main.c \
 ../Core/Src/system_stm32f4xx.c 
 
@@ -16,7 +15,6 @@ OBJS += \
 ./Core/Src/DMA.o \
 ./Core/Src/GPIO.o \
 ./Core/Src/INTERRUPT.o \
-./Core/Src/USART.o \
 ./Core/Src/main.o \
 ./Core/Src/system_stm32f4xx.o 
 
@@ -24,7 +22,6 @@ C_DEPS += \
 ./Core/Src/DMA.d \
 ./Core/Src/GPIO.d \
 ./Core/Src/INTERRUPT.d \
-./Core/Src/USART.d \
 ./Core/Src/main.d \
 ./Core/Src/system_stm32f4xx.d 
 
@@ -36,7 +33,7 @@ Core/Src/%.o: ../Core/Src/%.c Core/Src/subdir.mk
 clean: clean-Core-2f-Src
 
 clean-Core-2f-Src:
-	-$(RM) ./Core/Src/DMA.d ./Core/Src/DMA.o ./Core/Src/GPIO.d ./Core/Src/GPIO.o ./Core/Src/INTERRUPT.d ./Core/Src/INTERRUPT.o ./Core/Src/USART.d ./Core/Src/USART.o ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/system_stm32f4xx.d ./Core/Src/system_stm32f4xx.o
+	-$(RM) ./Core/Src/DMA.d ./Core/Src/DMA.o ./Core/Src/GPIO.d ./Core/Src/GPIO.o ./Core/Src/INTERRUPT.d ./Core/Src/INTERRUPT.o ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/system_stm32f4xx.d ./Core/Src/system_stm32f4xx.o
 
 .PHONY: clean-Core-2f-Src
 

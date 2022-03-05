@@ -28,6 +28,10 @@
 #define Byte        ((unsigned int)0x00) // 00: Byte (8-bit)
 #define Half_word   ((unsigned int)0x01) // 01: Half-word (16-bit)
 #define Word        ((unsigned int)0x02) // 10: Word (32-bit)
+//Data transfer direction
+#define P2M      ((unsigned int)0x00)//00: Peripheral-to-memory
+#define M2P      ((unsigned int)0x01)//01: Memory-to-peripheral
+#define M2M      ((unsigned int)0x02)//10: Memory-to-memory
 //Mode
 #define Direct_Mode ((unsigned char)0)
 #define FIFO        ((unsigned char)1)
@@ -36,9 +40,13 @@
 #define Brust_4     ((unsigned int)0x01)
 #define Brust_8     ((unsigned int)0x02)
 #define Brust_16    ((unsigned int)0x03)
-//TransferCompelete
-#define TransferCompelete    ((unsigned char)0)
 
+//TransferState
+#define TransferComplete    ((unsigned char)5)
+#define HalfTransfer        ((unsigned char)4)
+#define TransferErorr       ((unsigned char)3)
+#define DirectModeErorr     ((unsigned char)2)
+#define FIFOErorr           ((unsigned char)1)
 
 //0x4002 6000 - 0x4002 63FF DMA1
 #define DMA1_LISR         Peripheral_REG(0x40026000 , 0x0000) //DMA1_LISR  0x0000
@@ -170,9 +178,9 @@
 //A function to initialize the DMA driver.
 void DMA_Init(unsigned char Peripheral_ID, unsigned char Stream_NM);
 //A function to initialize the DMA channel parameters, DMA Peripheral ID, Trigger source, Source address, destination address, number of transfers, transfer item size, transfer mode, transfer type(Single or burst).
-void DMA_ChannelParameters(unsigned char Peripheral_ID, unsigned char Stream_NM, unsigned char Trigger_Src, unsigned int *Src_Add, unsigned int *Dest_Add, unsigned int NM_Of_Transfer,unsigned int Item_Size, unsigned char Mode, unsigned int Transfer_Type);
+void DMA_ChannelParameters(unsigned char Peripheral_ID, unsigned char Stream_NM, unsigned char Trigger_Src, unsigned int *Src_Add, unsigned int *Dest_Add, unsigned int NM_Of_Transfer, unsigned int DIR, unsigned int Item_Size, unsigned char Mode, unsigned int Transfer_Type);
 //A function to request from the driver to start software transfer (memory to memory).
 void DMA_Req_To_Start_Transfer(unsigned char Peripheral_ID, unsigned char Stream_NM);
 //A function to check the transfer state
-//void DMA_Transfer_State(void);
+unsigned char DMA_TransferState(void);
 #endif /* INC_DMA_H_ */
