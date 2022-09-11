@@ -118,11 +118,11 @@ unsigned char GPIO_ReadPin(char Port, unsigned int PIN_NO)
 		case('A'):
 			if(!((GPIOA_MODER >> (2*PIN_NO)) & 1))
 			{
-				result = (GPIOB_IDR >> PIN_NO)& 1;
+				result = (GPIOA_IDR >> PIN_NO)& 1;
 			}
 		break;
 		case('B'):
-			if(!((GPIOA_MODER >> (2*PIN_NO)) & 1))
+			if(!((GPIOB_MODER >> (2*PIN_NO)) & 1))
 			{
 				result = (GPIOB_IDR >> PIN_NO)& 1;
 			}
@@ -150,7 +150,7 @@ void GPIO_WritePin(char Port, unsigned int Data, unsigned int NUMBER, unsigned i
 //			}
 		break;
 		case('B'):
-//		     if(GPIOA_MODER >> (2*PIN_NO) & 1)
+//		     if(GPIOB_MODER >> (2*PIN_NO) & 1)
 //		        {
 			 if(Data)
 			 {
